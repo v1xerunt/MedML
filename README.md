@@ -10,5 +10,6 @@ Source code, knowledge graphs and feature lists for the paper MedML: Fusing Medi
 
 The model structure of MedML is stored in ```model.py```, the training functions are in the ```train_medml.py```. 
 
-
+## License
+Please refer to License.txt or License.docx for research usage.
 
