@@ -52,30 +52,34 @@ class GATLayer(nn.Module):
         return self.__class__.__name__ + ' (' + str(self.in_features) + ' -> ' + str(self.out_features) + ')'
     
 class MedML(nn.Module):
-    def __init__(self, node_dim, hidden_dim, mlp_dim):
+    def __init__(self, feat_dim, node_dim, hidden_dim, mlp_dim, num_layers=1):
         super(MedML, self).__init__()
         self.gat_1 = GATLayer(node_dim+1, hidden_dim)
-        self.gat_2 = GATLayer(hidden_dim, hidden_dim)
+        self.num_layers = num_layers
+        if num_layers > 1:
+            self.gat_layers = nn.ModuleList(GATLayer(hidden_dim, hidden_dim) for i in range(num_layers-1))
         self.fc = nn.Linear(hidden_dim, mlp_dim)
         self.fc_2 = nn.Linear(mlp_dim, 1)
-        self.node_embd = nn.Parameter(torch.randn(len(feat_list), node_dim))
-        self.reset_parameters()
+        self.node_embd = nn.Parameter(torch.randn(feat_dim, node_dim))
         self.reset_parameters()
 
     def reset_parameters(self):
         gain = nn.init.calculate_gain('relu')
         nn.init.xavier_normal_(self.fc.weight, gain=gain)
+        nn.init.xavier_normal_(self.fc_2.weight, gain=gain)
 
     def forward(self, g, adj, bm):
         g, att = self.gat_1(g, adj)
+        g = F.elu(g)
+        for i in range(self.num_layers-1):
+            g, att = self.gat_layers[i]
+            g = F.elu(g)
         g_vec = []
-        att_vec = []
         for i in range(len(bm)):
             g_vec.append(torch.mean(g[bm[i, 0]:bm[i, 0]+bm[i, 1], :], dim=0))
-            att_vec.append(att[bm[i, 0]:bm[i, 0]+bm[i, 1], bm[i, 0]:bm[i, 0]+bm[i, 1]].cpu().detach().numpy())
         g_vec = torch.stack(g_vec)
         pred = self.fc(g_vec)
         pred = torch.relu(pred)
         pred = self.fc_2(pred)
         pred = torch.sigmoid(pred)
-        return pred, g_vec, att_vec
+        return pred, g_vec
