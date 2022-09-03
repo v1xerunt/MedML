@@ -1,5 +1,5 @@
 # MedML
-Source code, knowledge graphs and feature lists for the paper MedML: Fusing Medical Knowledge and Machine Learning Models for Early Pediatric COVID-19 Hospitalization and Severity Prediction
+Source code, knowledge graphs and feature lists for the paper [MedML: Fusing Medical Knowledge and Machine Learning Models for Early Pediatric COVID-19 Hospitalization and Severity Prediction](https://www.cell.com/iscience/fulltext/S2589-0042(22)01242-1).
 
 ## Requirements
 
@@ -18,6 +18,19 @@ The data should be stored in the ```data``` folder. We provide a few dummy data 
 ## Training MedML
 
 The training functions and hyperparameters are in the ```train_medml.py```. 
+
+## Citation
+
+```latex
+@article{gao2022medml,
+  title={MedML: Fusing Medical Knowledge and Machine Learning Models for Early Pediatric COVID-19 Hospitalization and Severity Prediction},
+  author={Gao, Junyi and Yang, Chaoqi and Heintz, Joerg and Barrows, Scott and Albers, Elise and Stapel, Mary and Warfield, Sara and Cross, Adam and Sun, Jimeng and others},
+  journal={Iscience},
+  pages={104970},
+  year={2022},
+  publisher={Elsevier}
+}
+```
 
 ## License
 
